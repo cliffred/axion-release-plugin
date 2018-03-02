@@ -20,7 +20,8 @@ class PushReleaseTask extends DefaultTask {
         Context context = GradleAwareContext.create(project, config)
 
         Releaser releaser = context.releaser()
-        ScmPushResult result = releaser.pushRelease()
+        //TODO this doesn't work, don't know the release tag name at this point
+        ScmPushResult result = releaser.pushRelease('')
 
         if(!result.success) {
             def message = result.remoteMessage.orElse("Unknown error during push")

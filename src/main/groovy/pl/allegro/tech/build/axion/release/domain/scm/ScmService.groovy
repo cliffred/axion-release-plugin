@@ -32,7 +32,7 @@ class ScmService {
         }
     }
 
-    ScmPushResult push() {
+    ScmPushResult push(String releasedTagName) {
         if (localOnlyResolver.localOnly(this.remoteAttached())) {
             logger.quiet("Changes made to local repository only")
             return new ScmPushResult(true, Optional.empty())
@@ -40,7 +40,7 @@ class ScmService {
 
         try {
             logger.quiet("Pushing all to remote: ${scmProperties.remote}")
-            return repository.push(scmProperties.identity, scmProperties.pushOptions())
+            return repository.push(scmProperties.identity, scmProperties.pushOptions(), releasedTagName)
         } catch (ScmException e) {
             logger.quiet("Exception occurred during push: ${e.message}")
             throw e

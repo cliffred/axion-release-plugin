@@ -37,7 +37,7 @@ class DryRepository implements ScmRepository {
     }
 
     @Override
-    ScmPushResult push(ScmIdentity identity, ScmPushOptions pushOptions) {
+    ScmPushResult push(ScmIdentity identity, ScmPushOptions pushOptions, String releasedTagName) {
         log("pushing to remote: ${pushOptions.remote}")
         return new ScmPushResult(true, Optional.empty())
     }

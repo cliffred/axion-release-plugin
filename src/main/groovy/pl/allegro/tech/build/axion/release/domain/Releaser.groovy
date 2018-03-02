@@ -46,16 +46,20 @@ class Releaser {
     ScmPushResult releaseAndPush(Properties rules) {
         Optional<String> releasedTagName = release(rules)
 
-        ScmPushResult result = pushRelease()
-
-        if (!result.success) {
-            releasedTagName.ifPresent { rollbackRelease(it) }
+        if (releasedTagName.isPresent()) {
+            ScmPushResult result = pushRelease(releasedTagName.get())
+            if (!result.success) {
+                releasedTagName.ifPresent { rollbackRelease(it) }
+            }
+            return result
+        } else {
+            //TODO what kind of ScmPushResult should be returned if nothing is pushed?
+            return new ScmPushResult(true, Optional.empty())
         }
-        return result
     }
 
-    ScmPushResult pushRelease() {
-        return repository.push()
+    ScmPushResult pushRelease(String releasedTagName) {
+        return repository.push(releasedTagName)
     }
 
     private void rollbackRelease(String tagName) {

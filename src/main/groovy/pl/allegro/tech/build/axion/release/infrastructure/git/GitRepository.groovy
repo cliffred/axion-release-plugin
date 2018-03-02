@@ -95,11 +95,11 @@ class GitRepository implements ScmRepository {
     }
 
     @Override
-    ScmPushResult push(ScmIdentity identity, ScmPushOptions pushOptions) {
-        return push(identity, pushOptions, false)
+    ScmPushResult push(ScmIdentity identity, ScmPushOptions pushOptions, String releasedTagName) {
+        return push(identity, pushOptions, false, releasedTagName)
     }
 
-    ScmPushResult push(ScmIdentity identity, ScmPushOptions pushOptions, boolean all) {
+    ScmPushResult push(ScmIdentity identity, ScmPushOptions pushOptions, boolean all, String releasedTagName) {
         PushCommand command = pushCommand(identity, pushOptions.remote, all)
 
         // command has to be called twice:
@@ -112,7 +112,9 @@ class GitRepository implements ScmRepository {
         }
 
         // and another time for tags
-        return verifyPushResults(callPush(command.setPushTags()))
+        command.add(GIT_TAG_PREFIX + releasedTagName)
+
+        return verifyPushResults(callPush(command))
     }
 
     private Iterable<PushResult> callPush(PushCommand pushCommand) {

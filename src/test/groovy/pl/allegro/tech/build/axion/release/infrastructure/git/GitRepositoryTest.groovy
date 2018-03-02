@@ -247,10 +247,22 @@ class GitRepositoryTest extends Specification {
         repository.commit(['*'], 'commit after release-push')
 
         when:
-        repository.push(ScmIdentity.defaultIdentity(), new ScmPushOptions(remote: 'origin', pushTagsOnly: false), true)
+        repository.push(ScmIdentity.defaultIdentity(), new ScmPushOptions(remote: 'origin', pushTagsOnly: false), true, 'release-push')
 
         then:
         remoteRawRepository.log(maxCommits: 1)*.fullMessage == ['commit after release-push']
+        remoteRawRepository.tag.list()*.fullName == ['refs/tags/release-push']
+    }
+
+    def "should not push already existing tags to remote"() {
+        given:
+        repository.tag('otherTag')
+        repository.tag('release-push')
+
+        when:
+        repository.push(ScmIdentity.defaultIdentity(), new ScmPushOptions(remote: 'origin', pushTagsOnly: false), true, 'release-push')
+
+        then:
         remoteRawRepository.tag.list()*.fullName == ['refs/tags/release-push']
     }
 
@@ -259,7 +271,7 @@ class GitRepositoryTest extends Specification {
         repository.commit(['*'], 'commit after release-push')
 
         when:
-        repository.push(ScmIdentity.defaultIdentity(), new ScmPushOptions(remote: 'origin', pushTagsOnly: true))
+        repository.push(ScmIdentity.defaultIdentity(), new ScmPushOptions(remote: 'origin', pushTagsOnly: true), 'release-push')
 
         then:
         remoteRawRepository.log(maxCommits: 1)*.fullMessage == ['InitialCommit']
@@ -276,7 +288,7 @@ class GitRepositoryTest extends Specification {
         repository.attachRemote('customRemote', "file://$customRemoteProjectDir.canonicalPath")
 
         when:
-        repository.push(ScmIdentity.defaultIdentity(), new ScmPushOptions(remote: 'customRemote', pushTagsOnly: false), true)
+        repository.push(ScmIdentity.defaultIdentity(), new ScmPushOptions(remote: 'customRemote', pushTagsOnly: false), true, 'release-custom')
 
         then:
         customRemoteRawRepository.log(maxCommits: 1)*.fullMessage == ['commit after release-custom']

@@ -25,6 +25,6 @@ class NextVersionMarker {
 
         logger.quiet("Creating next version marker tag: $nextVersionTag")
         repository.tag(nextVersionTag)
-        repository.push()
+        repository.push(nextVersionTag)
     }
 }

@@ -24,7 +24,7 @@ class DryRepositoryTest extends Specification {
 
     def "should not push anything to scm"() {
         when:
-        dryRepository.push(ScmIdentity.defaultIdentity(), new ScmPushOptions('dry-remote', false))
+        dryRepository.push(ScmIdentity.defaultIdentity(), new ScmPushOptions('dry-remote', false), 'dry-tag')
 
         then:
         0 * scm.push(_, _)

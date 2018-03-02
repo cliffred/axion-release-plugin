@@ -37,7 +37,7 @@ class DummyRepository implements ScmRepository {
     }
 
     @Override
-    ScmPushResult push(ScmIdentity identity, ScmPushOptions pushOptions) {
+    ScmPushResult push(ScmIdentity identity, ScmPushOptions pushOptions, String releasedTagName) {
         log('push')
         return new ScmPushResult(true, Optional.empty())
     }
